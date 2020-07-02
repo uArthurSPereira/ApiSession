@@ -8,6 +8,12 @@ namespace ApiSession.Models
     [Table("tb_filme")]
     public partial class TbFilme
     {
+        public TbFilme()
+        {
+            TbDiretor = new HashSet<TbDiretor>();
+            TbFilmeAtor = new HashSet<TbFilmeAtor>();
+        }
+
         [Key]
         [Column("id_filme")]
         public int IdFilme { get; set; }
@@ -25,5 +31,10 @@ namespace ApiSession.Models
         public bool BtDisponivel { get; set; }
         [Column("dt_lancamento", TypeName = "datetime")]
         public DateTime DtLancamento { get; set; }
+
+        [InverseProperty("IdFilmeNavigation")]
+        public virtual ICollection<TbDiretor> TbDiretor { get; set; }
+        [InverseProperty("IdFilmeNavigation")]
+        public virtual ICollection<TbFilmeAtor> TbFilmeAtor { get; set; }
     }
 }
