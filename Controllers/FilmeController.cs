@@ -13,14 +13,25 @@ namespace ApiSession.Controllers
     [Route("[controller]")]
     public class FilmeController : ControllerBase
     {
-        [HttpPost]
-        public Models.TbFilme Inserir(Models.TbFilme filme)
-        {
-                Models.ApiSessionContext ctx = new Models.ApiSessionContext();
-                ctx.TbFilme.Add(filme);
-                ctx.SaveChanges();
+        Utils.FilmeConversor conversor = new Utils.FilmeConversor();
+        Busniess.FilmeBusiness filmeBusiness = new Busniess.FilmeBusiness();
 
-                return filme;
+        [HttpPost]
+        public ActionResult<Models.Response.FilmeResponce> Inserir(Models.Request.FilmeRequest req)
+        {
+               try
+               {
+                    Models.TbFilme filme = conversor.ParaFilme(req);   
+                    filme = filmeBusiness.Inserir(filme);       
+                    Models.Response.FilmeResponce resp = conversor.ParaResponse(filme);        
+                    return resp;        
+               }
+               catch (System.Exception ex)
+               {
+                       return BadRequest(
+                               new Models.Response.ErroResponse(404, ex.Message)
+                       );
+               }   
         }
 
         [HttpPut("{id}")]
